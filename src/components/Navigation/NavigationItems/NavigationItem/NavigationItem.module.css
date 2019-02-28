@@ -23,6 +23,7 @@
     display: flex;
     height: 100%;
     align-items: center;
+    width: 136px;
   }
 
   .NavigationItem a {
