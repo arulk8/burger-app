@@ -1,1 +1,1 @@
-code . && npm start
+code .&&npm start
