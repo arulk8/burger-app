@@ -3,15 +3,20 @@ import Button from '../../../components/UI/Button/Button';
 import classes from './ContactData.module.css';
 import axios from '../../../services/axios-orders';
 import Loader from '../../../components/UI/loader/loader';
+
+import Input from './../../../components/UI/input/input';
 class ContactData extends Component {
   state = {
-    name: '',
-    email: '',
-    address: {
-      street: '',
-      postalCode: ''
-    },
-    loading: false
+    orderForm: {
+      name: 'arul',
+      street: 'Test street1',
+      zipCode: '343453463',
+      country: 'india',
+      email: 'arulm@gmail.com',
+      deliveryMethod: 'Prime',
+
+      loading: false
+    }
   };
   orderHandler = event => {
     event.preventDefault();
@@ -19,17 +24,7 @@ class ContactData extends Component {
     this.setState({ loading: true });
     const order = {
       ingredients: this.props.ingredients,
-      price: this.props.totalPrice,
-      customer: {
-        name: 'arul'
-      },
-      address: {
-        street: 'Test street1',
-        zipCode: '343453463',
-        country: 'india'
-      },
-      email: 'arulm@gmail.com',
-      deliveryMethod: 'Prime'
+      price: this.props.totalPrice
     };
     axios
       .post('/orders.json', order)
@@ -44,26 +39,26 @@ class ContactData extends Component {
   render() {
     let form = (
       <form>
-        <input
-          className={ContactData.Input}
+        <Input
+          inputtype="input"
           type="name"
           placeholder="my name"
           name="name"
         />
-        <input
-          className={ContactData.Input}
+        <Input
+          inputtype="input"
           type="email"
           placeholder="my email"
           name="email"
         />
-        <input
-          className={ContactData.Input}
+        <Input
+          inputtype="input"
           type="street"
           placeholder="my street"
           name="street"
         />
-        <input
-          className={ContactData.Input}
+        <Input
+          inputtype="input"
           type="postal"
           placeholder="my postal code"
           name="postal"
