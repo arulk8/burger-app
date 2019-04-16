@@ -8,16 +8,61 @@ import Input from './../../../components/UI/input/input';
 class ContactData extends Component {
   state = {
     orderForm: {
-      name: 'arul',
-      street: 'Test street1',
-      zipCode: '343453463',
-      country: 'india',
-      email: 'arulm@gmail.com',
-      deliveryMethod: 'Prime',
+      name: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'Your Name'
+        },
+        value: ''
+      },
+      street: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'Your Street'
+        },
+        value: ''
+      },
+      zipCode: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'Zip Code'
+        },
+        value: ''
+      },
+      country: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'Your Country'
+        },
+        value: ''
+      },
+      email: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'Your Email'
+        },
+        value: ''
+      },
+      deliveryMethod: {
+        elementType: 'select',
+        elementConfig: {
+          options: [
+            { value: 'fastest', displayValue: 'Fastest' },
+            { value: 'cheapest', displayValue: 'Cheapest' }
+          ]
+        },
+        value: ''
+      },
 
       loading: false
     }
   };
+
   orderHandler = event => {
     event.preventDefault();
     console.log(this.props.ingredients);
@@ -37,32 +82,26 @@ class ContactData extends Component {
       });
   };
   render() {
+    const formElements = [];
+    for (let key in this.state.orderForm) {
+      formElements.push({
+        id: key,
+        config: this.state.orderForm[key]
+      });
+    }
     let form = (
       <form>
-        <Input
-          inputtype="input"
-          type="name"
-          placeholder="my name"
-          name="name"
-        />
-        <Input
-          inputtype="input"
-          type="email"
-          placeholder="my email"
-          name="email"
-        />
-        <Input
-          inputtype="input"
-          type="street"
-          placeholder="my street"
-          name="street"
-        />
-        <Input
-          inputtype="input"
-          type="postal"
-          placeholder="my postal code"
-          name="postal"
-        />
+        {formElements.map(i => {
+          return (
+            <Input
+              key={i.key}
+              elementConfig={i.config.elementConfig}
+              elementType={i.config.elementType}
+              value={i.config.value}
+            />
+          );
+        })}
+
         <Button clicked={event => this.orderHandler(event)} btnType="Success">
           ORDER
         </Button>
