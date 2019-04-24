@@ -2,29 +2,39 @@ import React from 'react';
 import classes from './input.module.css';
 const Input = props => {
   let inputElement = null;
+  const inputClasses = [classes.Input];
+  if (props.inValid && props.shouldValidate) {
+    inputClasses.push(classes.Invalid);
+  }
 
   switch (props.elementType) {
     case 'input':
       inputElement = (
         <input
-          className={classes.Input}
+          className={inputClasses.join(' ')}
           {...props.elementConfig}
           value={props.value}
+          onChange={props.change}
         />
       );
       break;
     case 'textarea':
       inputElement = (
         <textarea
-          className={classes.Input}
+          className={inputClasses.join(' ')}
           {...props.elementConfig}
           value={props.value}
+          onChange={props.change}
         />
       );
       break;
     case 'select':
       inputElement = (
-        <select className={classes.Input} value={props.value}>
+        <select
+          className={inputClasses.join(' ')}
+          value={props.value}
+          onChange={props.change}
+        >
           {props.elementConfig.options.map(i => {
             return (
               <option key={i.displayValue} value={i.value}>
@@ -38,15 +48,16 @@ const Input = props => {
     default:
       inputElement = (
         <input
-          className={classes.Input}
+          className={inputClasses.join(' ')}
           {...props.elementConfig}
           value={props.value}
+          onChange={props.change}
         />
       );
       break;
   }
   return (
-    <div className={classes.inputElement}>
+    <div className={inputClasses.join(' ')}>
       <label className={classes.Label}>{props.label}</label>
       {inputElement}
     </div>
