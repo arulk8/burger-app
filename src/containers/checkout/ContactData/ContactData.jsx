@@ -84,6 +84,9 @@ class ContactData extends Component {
           ]
         },
         value: 'fastest',
+        validation: {
+          required: false
+        },
         valid: true,
         touched: false
       }
@@ -98,10 +101,10 @@ class ContactData extends Component {
       isValid = value.trim(' ') !== '' && isValid;
     }
     if (rules.minLength) {
-      isValid = rules.minLength >= value.minLength && isValid;
+      isValid = rules.minLength <= Number(value.length) && isValid;
     }
     if (rules.maxLength) {
-      isValid = rules.maxLength <= value.minLength && isValid;
+      isValid = rules.maxLength >= Number(value.length) && isValid;
     }
     return isValid;
   };
@@ -119,11 +122,8 @@ class ContactData extends Component {
     for (let inputItem in this.state.orderForm) {
       formIsValid = updatedOrderForm[inputItem].valid && formIsValid;
     }
-
-    this.setState(
-      { orderForm: updatedOrderForm },
-      { formIsValid: formIsValid }
-    );
+    console.log('form is valid', formIsValid);
+    this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
   };
   orderHandler = event => {
     event.preventDefault();
