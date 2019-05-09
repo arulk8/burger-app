@@ -7,7 +7,7 @@ import axios from '../../services/axios-orders';
 import Loader from '../../components/UI/loader/loader';
 import withErrorHandler from './../../Hoc/errorHandler/withErrorHandler';
 import { connect } from 'react-redux';
-import * as actionType from './../../store/actions';
+import * as actionType from '../../store/actions/actionTypes';
 
 class BurgerBuilder extends Component {
   state = {
