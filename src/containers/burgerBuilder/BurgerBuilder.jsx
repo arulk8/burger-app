@@ -7,22 +7,18 @@ import axios from '../../services/axios-orders';
 import Loader from '../../components/UI/loader/loader';
 import withErrorHandler from './../../Hoc/errorHandler/withErrorHandler';
 import { connect } from 'react-redux';
-import * as actionType from '../../store/actions/actionTypes';
-
+import { purchaseInit } from './../../store/actions/order';
+import {
+  addIngredient,
+  removeIngredient,
+  initIngredents
+} from './../../store/actions/burgerBuilder';
 class BurgerBuilder extends Component {
   state = {
-    purchasing: false,
-    loading: false
+    purchasing: false
   };
   componentDidMount() {
-    // axios
-    //   .get('/ingredients.json')
-    //   .then(res => {
-    //     this.setState({ ingredients: res.data });
-    //   })
-    //   .catch(err => {
-    //     console.error(err);
-    //   });
+    this.props.onInitIngredient();
   }
   updatedPurchaseState(updatedIngredient) {
     const ingredient = {
@@ -84,6 +80,7 @@ class BurgerBuilder extends Component {
     //   pathname: '/checkout',
     //   search: '?' + queryString
     // });
+    this.props.onInitPurchase();
     this.props.history.push({
       pathname: '/checkout'
     });
@@ -104,7 +101,11 @@ class BurgerBuilder extends Component {
       disabledInfo[key] = disabledInfo[key] <= 0;
     }
 
-    let burger = <Loader />;
+    let burger = this.props.error ? (
+      <p> Ingredient cannot be loaded</p>
+    ) : (
+      <Loader />
+    );
 
     if (this.props.ings) {
       burger = (
@@ -129,9 +130,7 @@ class BurgerBuilder extends Component {
         />
       );
     }
-    if (this.state.loading) {
-      orderSummary = <Loader />;
-    }
+
     return (
       <Fragment>
         <Modal
@@ -148,16 +147,17 @@ class BurgerBuilder extends Component {
 
 const mapReduxStateToReactProps = state => {
   return {
-    ings: state.ingredients,
-    totalPrice: state.totalPrice
+    ings: state.burgerBuilder.ingredients,
+    totalPrice: state.burgerBuilder.totalPrice,
+    error: state.error
   };
 };
 const mapReduxDispathToReactProps = dispatch => {
   return {
-    onIngredientAdded: ingName =>
-      dispatch({ type: actionType.ADD_INGREDIENT, ingredientName: ingName }),
-    onIngredientRemoved: ingName =>
-      dispatch({ type: actionType.REMOVE_INGREDIENT, ingredientName: ingName })
+    onIngredientAdded: ingName => dispatch(addIngredient(ingName)),
+    onIngredientRemoved: ingName => dispatch(removeIngredient(ingName)),
+    onInitIngredient: () => dispatch(initIngredents()),
+    onInitPurchase: () => dispatch(purchaseInit())
   };
 };
 

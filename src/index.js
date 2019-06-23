@@ -6,8 +6,11 @@ import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.css';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware, compose } from 'redux';
-import reducer from './store/reducers/burgerBuilder';
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
+import burgerBuildReducer from './store/reducers/burgerBuilder';
+import thunk from 'redux-thunk';
+
+import orderReducer from './store/reducers/order';
 /*const logger = store => {
   return next => {
     return action => {
@@ -17,13 +20,24 @@ import reducer from './store/reducers/burgerBuilder';
       return result;
     };
   };
-};
+};*/
+const rootReducer = combineReducers({
+  burgerBuilder: burgerBuildReducer,
+  order: orderReducer
+});
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const store = createStore(reducer, composeEnhancers(applyMiddleware(logger)));*/
 const store = createStore(
-  reducer,
+  rootReducer,
+  composeEnhancers(applyMiddleware(thunk))
+);
+
+/*
+this is used when we dont have middleware
+const store = createStore(
+  burgerBuildReducer,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
+*/
 const app = (
   <Provider store={store}>
     <BrowserRouter>
