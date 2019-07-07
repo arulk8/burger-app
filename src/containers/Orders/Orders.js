@@ -8,7 +8,7 @@ import { fetchOrders } from './../../store/actions/order';
 import Loader from './../../components/UI/loader/loader';
 class Orders extends Component {
   componentDidMount() {
-    this.props.onFetchOrders();
+    this.props.onFetchOrders(this.props.token);
   }
   render() {
     if (this.props.loading) {
@@ -28,14 +28,15 @@ class Orders extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onFetchOrders: () => dispatch(fetchOrders())
+    onFetchOrders: token => dispatch(fetchOrders(token))
   };
 };
 
 const mapStateToProps = state => {
   return {
     orders: state.order.orders,
-    loading: state.order.loading
+    loading: state.order.loading,
+    token: state.auth.token
   };
 };
 

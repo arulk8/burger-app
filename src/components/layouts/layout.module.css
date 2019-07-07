@@ -1,9 +1,0 @@
-.Content {
-  margin: 60px;
-}
-
-@media (min-width: 500px) {
-  .Content {
-    margin: 72px;
-  }
-}

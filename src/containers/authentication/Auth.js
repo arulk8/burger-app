@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import Input from '../../components/UI/input/input';
 import Button from '../../components/UI/Button/Button';
 import classes from './Auth.module.css';
-// import * as actions from '../../store/actions/index';
-
+import * as actions from '../../store/actions/auth';
+import Loader from './../../components/UI/loader/loader';
+import { Redirect } from 'react-router-dom';
 class Auth extends Component {
   state = {
     controls: {
@@ -37,7 +38,8 @@ class Auth extends Component {
         valid: false,
         touched: false
       }
-    }
+    },
+    isSignup: true
   };
 
   checkValidity(value, rules) {
@@ -71,6 +73,13 @@ class Auth extends Component {
     return isValid;
   }
 
+  switchAuthModeHandler = () => {
+    this.setState(prevState => {
+      return {
+        isSignup: !prevState.isSignup
+      };
+    });
+  };
   inputChangedHandler = (event, controlName) => {
     const updatedControls = {
       ...this.state.controls,
@@ -91,7 +100,8 @@ class Auth extends Component {
     event.preventDefault();
     this.props.onAuth(
       this.state.controls.email.value,
-      this.state.controls.password.value
+      this.state.controls.password.value,
+      this.state.isSignup
     );
   };
 
@@ -104,7 +114,7 @@ class Auth extends Component {
       });
     }
 
-    const form = formElementsArray.map(formElement => (
+    let form = formElementsArray.map(formElement => (
       <Input
         key={formElement.id}
         elementType={formElement.config.elementType}
@@ -113,16 +123,37 @@ class Auth extends Component {
         invalid={!formElement.config.valid}
         shouldValidate={formElement.config.validation}
         touched={formElement.config.touched}
-        changed={event => this.inputChangedHandler(event, formElement.id)}
+        change={event => this.inputChangedHandler(event, formElement.id)}
       />
     ));
 
+    if (this.props.loading) {
+      form = <Loader />;
+    }
+    let errorMsg = null;
+    if (this.props.error) {
+      errorMsg = <p>{this.props.error.message}</p>;
+    }
+    if (this.props.isAuthenticated) {
+      return <Redirect to="/" />;
+    }
     return (
-      <div className={classes.Auth}>
-        <form onSubmit={this.submitHandler}>
-          {form}
-          <Button btnType="Success">SUBMIT</Button>
-        </form>
+      <div>
+        <h3 style={{ textAlign: 'center' }}>
+          {this.state.isSignup
+            ? 'Create New Account'
+            : 'Already a User? Sign In'}
+        </h3>
+        <div className={classes.Auth}>
+          <form onSubmit={this.submitHandler}>
+            {errorMsg}
+            {form}
+            <Button btnType="Success">SUBMIT</Button>
+          </form>
+          <Button btnType="Danger" clicked={this.switchAuthModeHandler}>
+            SWITCH TO {this.state.isSignup ? 'SIGN IN' : 'SIGN UP'}
+          </Button>
+        </div>
       </div>
     );
   }
@@ -130,11 +161,18 @@ class Auth extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    // onAuth: (email, password) => dispatch(actions.auth(email, password))
+    onAuth: (email, password, isSignup) =>
+      dispatch(actions.auth(email, password, isSignup))
   };
 };
-
+const mapStateToProps = state => {
+  return {
+    loading: state.auth.loading,
+    error: state.auth.error,
+    isAuthenticated: state.auth.token != null
+  };
+};
 export default connect(
-  null,
-  null
+  mapStateToProps,
+  mapDispatchToProps
 )(Auth);
