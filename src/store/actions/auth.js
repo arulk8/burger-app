@@ -62,3 +62,10 @@ export const checkAuthTimeout = expirationTimeout => {
     }, expirationTimeout * 1000);
   };
 };
+
+export const setAuthRedirectPath = path => {
+  return {
+    type: actionTypes.SET_AUTH_REDIRECT,
+    path: path
+  };
+};

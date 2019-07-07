@@ -7,6 +7,7 @@ import classes from './Auth.module.css';
 import * as actions from '../../store/actions/auth';
 import Loader from './../../components/UI/loader/loader';
 import { Redirect } from 'react-router-dom';
+import { setAuthRedirectPath } from './../../store/actions/auth';
 class Auth extends Component {
   state = {
     controls: {
@@ -72,6 +73,11 @@ class Auth extends Component {
 
     return isValid;
   }
+  componentDidMount() {
+    if (!this.props.buildingBurger && this.props.authRedirectPath !== '/') {
+      this.props.onSetAuthRedirectPath();
+    }
+  }
 
   switchAuthModeHandler = () => {
     this.setState(prevState => {
@@ -135,7 +141,7 @@ class Auth extends Component {
       errorMsg = <p>{this.props.error.message}</p>;
     }
     if (this.props.isAuthenticated) {
-      return <Redirect to="/" />;
+      return <Redirect to={this.props.authRedirectPath} />;
     }
     return (
       <div>
@@ -162,14 +168,17 @@ class Auth extends Component {
 const mapDispatchToProps = dispatch => {
   return {
     onAuth: (email, password, isSignup) =>
-      dispatch(actions.auth(email, password, isSignup))
+      dispatch(actions.auth(email, password, isSignup)),
+    onSetAuthRedirectPath: () => dispatch(setAuthRedirectPath('/'))
   };
 };
 const mapStateToProps = state => {
   return {
     loading: state.auth.loading,
     error: state.auth.error,
-    isAuthenticated: state.auth.token != null
+    isAuthenticated: state.auth.token != null,
+    buildingBurger: state.burgerBuilder.building,
+    authRedirectPath: state.auth.authRedirectPath
   };
 };
 export default connect(
